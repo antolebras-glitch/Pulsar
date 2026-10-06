@@ -1,0 +1,25 @@
+name: Compiler Pulsar (VST3 Windows)
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: VST3 Windows 64 bits
+    runs-on: windows-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v6
+
+      - name: Configurer (télécharge JUCE)
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compiler
+        run: cmake --build build --config Release --target Pulsar_VST3 --parallel
+      - name: Publier le plugin
+        uses: actions/upload-artifact@v6
+        with:
+          name: Pulsar-VST3-Windows
+          path: build/Pulsar_artefacts/Release/VST3/
+          if-no-files-found: error
